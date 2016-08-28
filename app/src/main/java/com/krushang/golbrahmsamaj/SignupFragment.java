@@ -4,6 +4,7 @@ import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.annotation.TargetApi;
 import android.content.Context;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.net.Uri;
@@ -220,6 +221,8 @@ public class SignupFragment extends Fragment implements LoaderManager.LoaderCall
      * errors are presented and no actual login attempt is made.
      */
     private void attemptLogin() {
+        Intent i = new Intent(getActivity().getApplicationContext(),HomeActivity.class);
+        startActivity(i);
         if (mAuthTask != null) {
             return;
         }

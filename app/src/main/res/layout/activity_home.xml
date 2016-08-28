@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+xmlns:tools="http://schemas.android.com/tools"
+android:layout_width="match_parent"
+android:layout_height="match_parent" >
+
+<!-- Header aligned to top -->
+
+<RelativeLayout
+    android:id="@+id/header"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_alignParentTop="true"
+    android:background="#FC9"
+    android:gravity="center" >
+    <ImageView
+        android:layout_width="match_parent"
+        android:layout_height="200dp"
+        android:id="@+id/imageView"
+        android:layout_centerVertical="true"
+        android:layout_centerHorizontal="true"
+        android:src="@drawable/dp"/>
+</RelativeLayout>
+
+<!-- Footer aligned to bottom -->
+
+<RelativeLayout
+    android:id="@+id/footer"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_alignParentBottom="true"
+    android:background="#FC0"
+    android:gravity="center" >
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="5dp"
+        android:text="Fixed Footer"
+        android:textColor="#000"
+        android:textSize="20sp" />
+</RelativeLayout>
+
+
+<!-- Content below header and above footer -->
+
+<RelativeLayout
+    android:id="@+id/content"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:layout_above="@id/footer"
+    android:layout_below="@id/header"
+    android:gravity="center" >
+
+    <GridView
+        android:id="@+id/categoryGrid"
+        android:layout_width="match_parent"
+        android:layout_height="300dp"
+        android:background="#FFFFFF"
+        android:clickable="true"
+        android:drawSelectorOnTop="false"
+        android:focusable="true"
+        android:gravity="center"
+        android:numColumns="3"
+        android:paddingTop="15dp"
+        android:stretchMode="columnWidth"
+        android:listSelector="#00FFFFFF"
+        tools:ignore="HardcodedText" />
+</RelativeLayout>
+
+</RelativeLayout>
