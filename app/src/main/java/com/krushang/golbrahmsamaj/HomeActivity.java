@@ -2,6 +2,8 @@ package com.krushang.golbrahmsamaj;
 
 import android.app.Activity;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.widget.GridView;
 
@@ -14,25 +16,30 @@ import java.util.List;
 /**
  * Created by Vyas's on 29/08/2016.
  */
-public class HomeActivity extends Activity {
+public class HomeActivity extends AppCompatActivity {
     GridView grid;
     List<Categories> categories = new ArrayList<Categories>();
     Categories cat;
+    private Toolbar toolbar;
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
 
-        grid = (GridView)findViewById(R.id.categoryGrid);
+        toolbar = (Toolbar) findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
-        for (int i = 0;i<=5;i++){
+        grid = (GridView) findViewById(R.id.categoryGrid);
+
+        for (int i = 0; i <= 5; i++) {
             cat = new Categories();
-            cat.setCatTitle("Title "+i);
-            cat.setCatImage(getResources().getIdentifier("@drawable/om", null, getPackageName()));
+            cat.setCatTitle("Title " + i);
+            cat.setCatImage(getResources().getIdentifier("@mipmap/ic_launcher", null, getPackageName()));
             categories.add(cat);
         }
-
-        grid.setAdapter(new CategoryAdaptor(this.getApplicationContext(),categories));
+        grid.setAdapter(new CategoryAdaptor(this.getApplicationContext(), categories));
     }
 
     @Override

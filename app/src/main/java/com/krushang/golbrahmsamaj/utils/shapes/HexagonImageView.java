@@ -12,7 +12,7 @@ import android.widget.ImageView;
 
 public class HexagonImageView extends ImageView {
     private Path hexagonPath;
-    private Path hexagonBorderPath;
+    //private Path hexagonBorderPath;
     private Paint mBorderPaint;
 
     public HexagonImageView(Context context) {
@@ -32,13 +32,13 @@ public class HexagonImageView extends ImageView {
 
     private void init() {
         this.hexagonPath = new Path();
-        this.hexagonBorderPath = new Path();
+        //this.hexagonBorderPath = new Path();
 
-        this.mBorderPaint = new Paint();
-        this.mBorderPaint.setColor(Color.parseColor("#9C27B0"));
+        /*this.mBorderPaint = new Paint();
+        this.mBorderPaint.setColor(Color.parseColor("#FF5722"));
         this.mBorderPaint.setStrokeCap(Paint.Cap.ROUND);
         this.mBorderPaint.setStrokeWidth(20f);
-        this.mBorderPaint.setStyle(Paint.Style.STROKE);
+        this.mBorderPaint.setStyle(Paint.Style.STROKE);*/
     }
 
     public void setRadius(float radius) {
@@ -69,20 +69,20 @@ public class HexagonImageView extends ImageView {
         float halfRadiusBorder = radiusBorder / 2f;
         float triangleBorderHeight = (float) (Math.sqrt(3.0) * halfRadiusBorder);
 
-        this.hexagonBorderPath.reset();
+       /* this.hexagonBorderPath.reset();
         this.hexagonBorderPath.moveTo(centerX, centerY + radiusBorder);
         this.hexagonBorderPath.lineTo(centerX - triangleBorderHeight, centerY + halfRadiusBorder);
         this.hexagonBorderPath.lineTo(centerX - triangleBorderHeight, centerY - halfRadiusBorder);
         this.hexagonBorderPath.lineTo(centerX, centerY - radiusBorder);
         this.hexagonBorderPath.lineTo(centerX + triangleBorderHeight, centerY - halfRadiusBorder);
         this.hexagonBorderPath.lineTo(centerX + triangleBorderHeight, centerY + halfRadiusBorder);
-        this.hexagonBorderPath.close();
+        this.hexagonBorderPath.close();*/
         invalidate();
     }
 
     @Override
     public void onDraw(Canvas c) {
-        c.drawPath(hexagonBorderPath, mBorderPaint);
+        //c.drawPath(hexagonBorderPath, mBorderPaint);
         c.clipPath(hexagonPath, Region.Op.INTERSECT);
         c.drawColor(Color.TRANSPARENT, PorterDuff.Mode.CLEAR);
         super.onDraw(c);

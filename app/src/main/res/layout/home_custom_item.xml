@@ -1,25 +1,22 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!--http://www.androidhub4you.com/2014/10/android-custom-shape-imageview-rounded.html is used for shape -->
-<!--http://stackoverflow.com/questions/22601400/how-to-give-hexagon-shape-to-imageview for hexagonal shape -->
-
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:weightSum="1"
-    android:padding="10dp">
+    android:orientation="vertical"
+    android:weightSum="1">
+
     <com.krushang.golbrahmsamaj.utils.shapes.HexagonImageView
         android:id="@+id/home_category_hexa"
         android:layout_width="match_parent"
         android:layout_height="100dp"
-        android:src="@drawable/om"
-        />
+        android:src="@mipmap/ic_shankar" />
 
     <TextView
+        android:id="@+id/home_category_text"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceMedium"
-        android:text="Title 0"
         android:gravity="center"
-        android:textColor="@color/colorAccent"
-        android:id="@+id/home_category_text" />
+        android:text="Title 0"
+        android:textColor="@android:color/background_dark"
+        android:textAppearance="?android:attr/textAppearanceMedium" />
 </LinearLayout>

@@ -1,71 +1,65 @@
-<?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-xmlns:tools="http://schemas.android.com/tools"
-android:layout_width="match_parent"
-android:layout_height="match_parent" >
-
-<!-- Header aligned to top -->
-
-<RelativeLayout
-    android:id="@+id/header"
+<android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:layout_alignParentTop="true"
-    android:background="#FC9"
-    android:gravity="center" >
-    <ImageView
+    android:layout_height="match_parent">
+
+    <android.support.design.widget.AppBarLayout
         android:layout_width="match_parent"
-        android:layout_height="200dp"
-        android:id="@+id/imageView"
-        android:layout_centerVertical="true"
-        android:layout_centerHorizontal="true"
-        android:src="@drawable/dp"/>
-</RelativeLayout>
-
-<!-- Footer aligned to bottom -->
-
-<RelativeLayout
-    android:id="@+id/footer"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:layout_alignParentBottom="true"
-    android:background="#FC0"
-    android:gravity="center" >
-
-    <TextView
-        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_margin="5dp"
-        android:text="Fixed Footer"
-        android:textColor="#000"
-        android:textSize="20sp" />
-</RelativeLayout>
+        android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar">
 
+        <android.support.v7.widget.Toolbar
+            android:id="@+id/toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize"
+            android:background="?attr/colorPrimary"
+            app:layout_scrollFlags="scroll|enterAlways"
+            app:popupTheme="@style/ThemeOverlay.AppCompat.Light" />
 
-<!-- Content below header and above footer -->
+    </android.support.design.widget.AppBarLayout>
 
-<RelativeLayout
-    android:id="@+id/content"
-    android:layout_width="fill_parent"
-    android:layout_height="fill_parent"
-    android:layout_above="@id/footer"
-    android:layout_below="@id/header"
-    android:gravity="center" >
-
-    <GridView
-        android:id="@+id/categoryGrid"
+    <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="300dp"
-        android:background="#FFFFFF"
-        android:clickable="true"
-        android:drawSelectorOnTop="false"
-        android:focusable="true"
-        android:gravity="center"
-        android:numColumns="3"
-        android:paddingTop="15dp"
-        android:stretchMode="columnWidth"
-        android:listSelector="#00FFFFFF"
-        tools:ignore="HardcodedText" />
-</RelativeLayout>
+        android:layout_height="match_parent"
+        android:layout_marginTop="?attr/actionBarSize"
+        android:orientation="vertical"
+        android:weightSum="10">
 
-</RelativeLayout>
+        <ImageView
+            android:id="@+id/imageView"
+            android:layout_width="match_parent"
+            android:layout_height="150dp"
+            android:layout_alignParentTop="true"
+            android:background="@color/feed_bg"
+            android:scaleType="fitXY"
+            android:src="@drawable/dp" />
+
+        <GridView
+            android:layout_below="@+id/imageView"
+            android:id="@+id/categoryGrid"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/feed_bg"
+            android:clickable="true"
+            android:columnWidth="100dp"
+            android:drawSelectorOnTop="false"
+            android:focusable="true"
+            android:gravity="center"
+            android:listSelector="#00FFFFFF"
+            android:numColumns="auto_fit"
+            android:layout_above="@+id/textViewFooter"
+            android:stretchMode="columnWidth"
+            tools:ignore="HardcodedText" />
+
+        <TextView
+            android:id="@+id/textViewFooter"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_margin="5dp"
+            android:gravity="center_horizontal"
+            android:text="Daily Quote will Come here"
+            android:textColor="#000" />
+    </RelativeLayout>
+</android.support.design.widget.CoordinatorLayout>
