@@ -1,14 +1,14 @@
-package com.krushang.golbrahmsamaj;
+package com.krushang.golbrahmsamaj.unused;
 
-import android.app.Activity;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.widget.GridView;
 
-import com.krushang.golbrahmsamaj.utils.adaptors.CategoryAdaptor;
-import com.krushang.golbrahmsamaj.utils.beans.Categories;
+import com.krushang.golbrahmsamaj.R;
+import com.krushang.golbrahmsamaj.adapter.CategoryAdapter;
+import com.krushang.golbrahmsamaj.data.Categories;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -25,7 +25,7 @@ public class HomeActivity extends AppCompatActivity {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_home);
+        setContentView(R.layout.unused_activity_home);
 
         toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -39,7 +39,7 @@ public class HomeActivity extends AppCompatActivity {
             cat.setCatImage(getResources().getIdentifier("@mipmap/ic_launcher", null, getPackageName()));
             categories.add(cat);
         }
-        grid.setAdapter(new CategoryAdaptor(this.getApplicationContext(), categories));
+        grid.setAdapter(new CategoryAdapter(this.getApplicationContext(), categories));
     }
 
     @Override

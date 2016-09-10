@@ -1,4 +1,4 @@
-package com.krushang.golbrahmsamaj.volley;
+package com.krushang.golbrahmsamaj.utils;
 
 /**
  * Created by MITALI on 29-08-2016.

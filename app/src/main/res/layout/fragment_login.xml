@@ -2,7 +2,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    tools:context="com.krushang.golbrahmsamaj.LoginFragment">
+    tools:context=".fragment.LoginFragment">
 
     <!-- TODO: Update blank fragment layout -->
     <ScrollView
@@ -35,7 +35,7 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="center">
 
-                    <AutoCompleteTextView
+                    <EditText
                         android:id="@+id/email"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
@@ -88,10 +88,10 @@
                 android:orientation="horizontal">
 
                 <CheckBox
-                    android:layout_marginLeft="10dp"
                     android:id="@+id/checkBox"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_marginLeft="10dp"
                     android:padding="10dp"
                     android:text="Remember me" />
 
@@ -99,11 +99,21 @@
 
 
             <TextView
-                android:layout_margin="10dp"
+                android:id="@+id/textView"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Forget Password ? ? Click Here."
-                android:id="@+id/textView" />
+                android:layout_margin="10dp"
+                android:text="Forget Password ? ? Click Here." />
+
+            <TextView
+                android:id="@+id/textViewMessage"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="10dp"
+                android:textColor="@android:color/holo_red_dark"
+                android:text=""
+                android:visibility="gone" />
+
 
             <Button
                 android:id="@+id/email_sign_in_button"
@@ -120,4 +130,13 @@
 
         </LinearLayout>
     </ScrollView>
+
+    <ProgressBar
+        android:id="@+id/login_progress"
+        style="?android:attr/progressBarStyleLarge"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_marginBottom="8dp"
+        android:visibility="gone" />
 </FrameLayout>

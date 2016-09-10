@@ -1,4 +1,4 @@
-package com.krushang.golbrahmsamaj;
+package com.krushang.golbrahmsamaj.fragment;
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
@@ -29,6 +29,8 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 
+import com.krushang.golbrahmsamaj.R;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -38,12 +40,12 @@ import static android.Manifest.permission.READ_CONTACTS;
 /**
  * A simple {@link Fragment} subclass.
  * Activities that contain this fragment must implement the
- * {@link LoginFragment.OnFragmentInteractionListener} interface
+ * {@link EventFragment.OnFragmentInteractionListener} interface
  * to handle interaction events.
- * Use the {@link LoginFragment#newInstance} factory method to
+ * Use the {@link EventFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class LoginFragment extends Fragment implements LoaderManager.LoaderCallbacks<Cursor> {
+public class EventFragment extends Fragment implements LoaderManager.LoaderCallbacks<Cursor> {
 
 
     /**
@@ -81,7 +83,7 @@ public class LoginFragment extends Fragment implements LoaderManager.LoaderCallb
 
     private OnFragmentInteractionListener mListener;
 
-    public LoginFragment() {
+    public EventFragment() {
         // Required empty public constructor
     }
 
@@ -94,8 +96,8 @@ public class LoginFragment extends Fragment implements LoaderManager.LoaderCallb
      * @return A new instance of fragment LoginFragment.
      */
     // TODO: Rename and change types and number of parameters
-    public static LoginFragment newInstance(String param1, String param2) {
-        LoginFragment fragment = new LoginFragment();
+    public static EventFragment newInstance(String param1, String param2) {
+        EventFragment fragment = new EventFragment();
         Bundle args = new Bundle();
         args.putString(ARG_PARAM1, param1);
         args.putString(ARG_PARAM2, param2);

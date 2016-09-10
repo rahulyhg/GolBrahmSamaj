@@ -1,21 +1,27 @@
-package com.krushang.golbrahmsamaj;
+package com.krushang.golbrahmsamaj.activity;
 
 import android.net.Uri;
+import android.os.Bundle;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
+
+import com.krushang.golbrahmsamaj.R;
+import com.krushang.golbrahmsamaj.fragment.EventFragment;
+import com.krushang.golbrahmsamaj.fragment.FeedFragment;
+import com.krushang.golbrahmsamaj.fragment.LoginFragment;
+import com.krushang.golbrahmsamaj.fragment.SignupFragment;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class MainActivity extends AppCompatActivity implements
-        LoginFragment.OnFragmentInteractionListener,
-        SignupFragment.OnFragmentInteractionListener {
+public class FeedActivity extends AppCompatActivity implements
+        FeedFragment.OnFragmentInteractionListener,
+        EventFragment.OnFragmentInteractionListener {
 
     private Toolbar toolbar;
     private TabLayout tabLayout;
@@ -24,12 +30,11 @@ public class MainActivity extends AppCompatActivity implements
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+        setContentView(R.layout.activity_feed);
 
         toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-        getSupportActionBar().setIcon(R.mipmap.ic_launcher);
-        //getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         viewPager = (ViewPager) findViewById(R.id.viewpager);
         setupViewPager(viewPager);
@@ -40,8 +45,11 @@ public class MainActivity extends AppCompatActivity implements
 
     private void setupViewPager(ViewPager viewPager) {
         ViewPagerAdapter adapter = new ViewPagerAdapter(getSupportFragmentManager());
-        adapter.addFrag(new LoginFragment(), "LOGIN");
-        adapter.addFrag(new SignupFragment(), "SIGNUP");
+        adapter.addFrag(new FeedFragment(), "RECENT");
+        adapter.addFrag(new FeedFragment(), "SPORTS");
+        adapter.addFrag(new FeedFragment(), "EDUCATION");
+        adapter.addFrag(new FeedFragment(), "OTHERS");
+        adapter.addFrag(new EventFragment(), "EVENTS");
         viewPager.setAdapter(adapter);
     }
 

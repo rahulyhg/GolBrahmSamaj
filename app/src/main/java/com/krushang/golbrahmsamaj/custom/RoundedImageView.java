@@ -1,4 +1,4 @@
-package com.krushang.golbrahmsamaj.utils.shapes;
+package com.krushang.golbrahmsamaj.custom;
 
 import android.content.Context;
 import android.graphics.Bitmap;
@@ -6,8 +6,6 @@ import android.graphics.Bitmap.Config;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
-import android.graphics.Path;
-import android.graphics.Point;
 import android.graphics.PorterDuff.Mode;
 import android.graphics.PorterDuffXfermode;
 import android.graphics.Rect;
@@ -16,10 +14,10 @@ import android.graphics.drawable.Drawable;
 import android.util.AttributeSet;
 import android.widget.ImageView;
 
-public class TriangleImageView extends ImageView {
+public class RoundedImageView extends ImageView {
 
 
-public TriangleImageView(Context ctx, AttributeSet attrs) {
+public RoundedImageView(Context ctx, AttributeSet attrs) {
     super(ctx, attrs);
 }
 
@@ -57,27 +55,21 @@ public static Bitmap getRoundedCroppedBitmap(Bitmap bitmap, int radius) {
             finalBitmap.getHeight(), Config.ARGB_8888);
     Canvas canvas = new Canvas(output);
 
-    Paint paint = new Paint();
+    final Paint paint = new Paint();
     final Rect rect = new Rect(0, 0, finalBitmap.getWidth(), finalBitmap.getHeight());
 
-    Point point1_draw = new Point(75,0);        
-    Point point2_draw = new Point(0,180);    
-    Point point3_draw = new Point(180,180);
-    
-    Path path = new Path();
-    path.moveTo(point1_draw.x,point1_draw.y);
-    path.lineTo(point2_draw.x,point2_draw.y);
-    path.lineTo(point3_draw.x,point3_draw.y);
-    path.lineTo(point1_draw.x,point1_draw.y);
-    path.close();
+    paint.setAntiAlias(true);
+    paint.setFilterBitmap(true);
+    paint.setDither(true);
     canvas.drawARGB(0, 0, 0, 0);
     paint.setColor(Color.parseColor("#BAB399"));
-    canvas.drawPath(path, paint);    
+    canvas.drawCircle(finalBitmap.getWidth() / 2+0.7f, finalBitmap.getHeight() / 2+0.7f,
+            finalBitmap.getWidth() / 2+0.1f, paint);
     paint.setXfermode(new PorterDuffXfermode(Mode.SRC_IN));
     canvas.drawBitmap(finalBitmap, rect, rect, paint);
 
 
-    return output;
+            return output;
 }
 
 }

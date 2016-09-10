@@ -1,4 +1,4 @@
-package com.krushang.golbrahmsamaj.utils.adaptors;
+package com.krushang.golbrahmsamaj.adapter;
 
 import android.view.View;
 import android.view.ViewGroup;
@@ -9,21 +9,18 @@ import android.widget.BaseAdapter;
  */
 import android.content.Context;
 import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.krushang.golbrahmsamaj.R;
-import com.krushang.golbrahmsamaj.utils.beans.Categories;
+import com.krushang.golbrahmsamaj.data.Categories;
 
 import java.util.List;
 
-public class CategoryAdaptor extends BaseAdapter{
+public class CategoryAdapter extends BaseAdapter{
     private Context mContext;
     private List<Categories> categories = null;
-    public CategoryAdaptor(Context c,List<Categories> categories) {
+    public CategoryAdapter(Context c, List<Categories> categories) {
         mContext = c;
         this.categories = categories;
     }
@@ -55,7 +52,7 @@ public class CategoryAdaptor extends BaseAdapter{
 
         if (convertView == null) {
             grid = new View(mContext);
-            grid = inflater.inflate(R.layout.home_custom_item, null);
+            grid = inflater.inflate(R.layout.unused_home_custom_item, null);
             TextView textView = (TextView) grid.findViewById(R.id.home_category_text);
             ImageView imageView = (ImageView)grid.findViewById(R.id.home_category_hexa);
             textView.setText(categories.get(position).getCatTitle());

@@ -1,9 +1,11 @@
-package com.krushang.golbrahmsamaj;
+package com.krushang.golbrahmsamaj.adapter;
 
 /**
  * Created by MITALI on 29-08-2016.
  */
 
+import com.krushang.golbrahmsamaj.custom.FeedImageView;
+import com.krushang.golbrahmsamaj.R;
 import com.krushang.golbrahmsamaj.application.AppController;
 import com.krushang.golbrahmsamaj.data.FeedItem;
 

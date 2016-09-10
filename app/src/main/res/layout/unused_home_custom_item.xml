@@ -5,7 +5,7 @@
     android:orientation="vertical"
     android:weightSum="1">
 
-    <com.krushang.golbrahmsamaj.utils.shapes.HexagonImageView
+    <com.krushang.golbrahmsamaj.custom.HexagonImageView
         android:id="@+id/home_category_hexa"
         android:layout_width="match_parent"
         android:layout_height="100dp"

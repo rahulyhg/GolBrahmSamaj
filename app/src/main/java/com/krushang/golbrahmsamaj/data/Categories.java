@@ -1,4 +1,4 @@
-package com.krushang.golbrahmsamaj.utils.beans;
+package com.krushang.golbrahmsamaj.data;
 
 /**
  * Created by Vyas's on 29/08/2016.
