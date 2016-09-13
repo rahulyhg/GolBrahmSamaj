@@ -28,12 +28,27 @@ import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.RadioGroup;
 import android.widget.TextView;
 
+import com.android.volley.DefaultRetryPolicy;
+import com.android.volley.Request;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.VolleyLog;
+import com.android.volley.toolbox.JsonObjectRequest;
 import com.krushang.golbrahmsamaj.R;
+import com.krushang.golbrahmsamaj.activity.FeedActivity;
+import com.krushang.golbrahmsamaj.application.AppController;
+import com.krushang.golbrahmsamaj.data.User;
 import com.krushang.golbrahmsamaj.unused.HomeActivity;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 
 import static android.Manifest.permission.READ_CONTACTS;
@@ -47,36 +62,42 @@ import static android.Manifest.permission.READ_CONTACTS;
  * Use the {@link LoginFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class SignupFragment extends Fragment implements LoaderManager.LoaderCallbacks<Cursor> {
+public class SignupFragment extends Fragment{ //implements LoaderManager.LoaderCallbacks<Cursor> {
 
+    private static final String URL = "users/add";
+
+    private static final String TAG = SignupFragment.class.getSimpleName();
 
     /**
      * Id to identity READ_CONTACTS permission request.
      */
     private static final int REQUEST_READ_CONTACTS = 0;
+    private static final int TIMEOUT_DURATION = 10000;
 
-    /**
-     * A dummy authentication store containing known user names and passwords.
-     * TODO: remove after connecting to a real authentication system.
-     */
-    private static final String[] DUMMY_CREDENTIALS = new String[]{
-            "foo@example.com:hello", "bar@example.com:world"
-    };
+    //New User Object
+    User user = null;
     /**
      * Keep track of the login task to ensure we can cancel it if requested.
      */
-    private UserLoginTask mAuthTask = null;
-
-    // UI references.
-    private AutoCompleteTextView mEmailView;
-    private EditText mPasswordView;
     private View mProgressView;
-    private View mLoginFormView;
+    private View mSignupFormView;
 
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
+
+
+    // UI references.
+    private EditText mEmailView;
+    private EditText mPasswordView;
+    private EditText mFirstNameView;
+    private EditText mLastNameView;
+    private EditText mContactNo;
+    private RadioGroup mGender;
+    private EditText mBirthDate;
+    private TextView mTextViewMessage;
+    private Button mEmailSignUpButton;
 
     // TODO: Rename and change types of parameters
     private String mParam1;
@@ -97,8 +118,8 @@ public class SignupFragment extends Fragment implements LoaderManager.LoaderCall
      * @return A new instance of fragment LoginFragment.
      */
     // TODO: Rename and change types and number of parameters
-    public static LoginFragment newInstance(String param1, String param2) {
-        LoginFragment fragment = new LoginFragment();
+    public static SignupFragment newInstance(String param1, String param2) {
+        SignupFragment fragment = new SignupFragment();
         Bundle args = new Bundle();
         args.putString(ARG_PARAM1, param1);
         args.putString(ARG_PARAM2, param2);
@@ -120,31 +141,34 @@ public class SignupFragment extends Fragment implements LoaderManager.LoaderCall
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_signup, container, false);
         // Inflate the layout for this fragment
-        mEmailView = (AutoCompleteTextView) view.findViewById(R.id.email);
-        populateAutoComplete();
-
+        mEmailView = (EditText) view.findViewById(R.id.email);
         mPasswordView = (EditText) view.findViewById(R.id.password);
-        mPasswordView.setOnEditorActionListener(new TextView.OnEditorActionListener() {
-            @Override
-            public boolean onEditorAction(TextView textView, int id, KeyEvent keyEvent) {
-                if (id == R.id.login || id == EditorInfo.IME_NULL) {
-                    attemptLogin();
-                    return true;
-                }
-                return false;
-            }
-        });
+        mFirstNameView = (EditText) view.findViewById(R.id.firstname);
+        mLastNameView = (EditText) view.findViewById(R.id.lastname);
+        mGender = (RadioGroup) view.findViewById(R.id.radioGrp);
+        mContactNo = (EditText)view.findViewById(R.id.contact);
+        mBirthDate = (EditText)view.findViewById(R.id.date_textview);
+        mTextViewMessage = (TextView) view.findViewById(R.id.textViewMessage);
 
-        Button mEmailSignUpButton = (Button) view.findViewById(R.id.email_sign_up_button);
+        mSignupFormView = view.findViewById(R.id.signup_form);
+        mProgressView = view.findViewById(R.id.Signup_progress);
+        String s = "hello world";
+        mEmailSignUpButton = (Button) view.findViewById(R.id.email_sign_up_button);
         mEmailSignUpButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                attemptLogin();
+                // Store values at the time of the login attempt.
+                user = new User();
+                user.setEmail(mEmailView.getText().toString());
+                user.setFirstName(mFirstNameView.getText().toString());
+                user.setPassword(mPasswordView.getText().toString());
+                user.setLastName(mLastNameView.getText().toString());
+                user.setContactNo(mContactNo.getText().toString());
+                user.setBirthDate(new Date());
+
+                attemptSignup(user);
             }
         });
-
-        mLoginFormView = view.findViewById(R.id.login_form);
-        mProgressView = view.findViewById(R.id.login_progress);
 
         return view;
     }
@@ -174,86 +198,70 @@ public class SignupFragment extends Fragment implements LoaderManager.LoaderCall
     }
 
 
-    private void populateAutoComplete() {
-        if (!mayRequestContacts()) {
-            return;
-        }
-
-        getLoaderManager().initLoader(0, null, this);
-    }
-
-    private boolean mayRequestContacts() {
-        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) {
-            return true;
-        }
-        if (getActivity().checkSelfPermission(READ_CONTACTS) == PackageManager.PERMISSION_GRANTED) {
-            return true;
-        }
-        if (shouldShowRequestPermissionRationale(READ_CONTACTS)) {
-            Snackbar.make(mEmailView, R.string.permission_rationale, Snackbar.LENGTH_INDEFINITE)
-                    .setAction(android.R.string.ok, new View.OnClickListener() {
-                        @Override
-                        @TargetApi(Build.VERSION_CODES.M)
-                        public void onClick(View v) {
-                            requestPermissions(new String[]{READ_CONTACTS}, REQUEST_READ_CONTACTS);
-                        }
-                    });
-        } else {
-            requestPermissions(new String[]{READ_CONTACTS}, REQUEST_READ_CONTACTS);
-        }
-        return false;
-    }
-
-    /**
-     * Callback received when a permissions request has been completed.
-     */
-    @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions,
-                                           @NonNull int[] grantResults) {
-        if (requestCode == REQUEST_READ_CONTACTS) {
-            if (grantResults.length == 1 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                populateAutoComplete();
-            }
-        }
-    }
-
-
     /**
      * Attempts to sign in or register the account specified by the login form.
      * If there are form errors (invalid email, missing fields, etc.), the
      * errors are presented and no actual login attempt is made.
      */
-    private void attemptLogin() {
-        Intent i = new Intent(getActivity().getApplicationContext(),HomeActivity.class);
-        startActivity(i);
-        if (mAuthTask != null) {
-            return;
-        }
+    private void attemptSignup(User user) {
 
         // Reset errors.
         mEmailView.setError(null);
         mPasswordView.setError(null);
+        mFirstNameView.setError(null);
+        mLastNameView.setError(null);
+        mContactNo.setError(null);
+        mBirthDate.setError(null);
 
-        // Store values at the time of the login attempt.
-        String email = mEmailView.getText().toString();
-        String password = mPasswordView.getText().toString();
+
 
         boolean cancel = false;
         View focusView = null;
 
+        if (TextUtils.isEmpty(user.getEmail())){
+            mEmailView.setError(getString(R.string.error_field_required));
+            focusView = mEmailView;
+            cancel = true;
+        }
+        if (TextUtils.isEmpty(user.getPassword())) {
+            mPasswordView.setError(getString(R.string.error_field_required));
+            focusView = mPasswordView;
+            cancel = true;
+        }
+        if (TextUtils.isEmpty(user.getFirstName())) {
+            mFirstNameView.setError(getString(R.string.error_field_required));
+            focusView = mFirstNameView;
+            cancel = true;
+        }
+        if (TextUtils.isEmpty(user.getLastName())) {
+            mLastNameView.setError(getString(R.string.error_field_required));
+            focusView = mLastNameView;
+            cancel = true;
+        }
+        if (TextUtils.isEmpty(user.getContactNo())) {
+            mContactNo.setError(getString(R.string.error_field_required));
+            focusView = mContactNo;
+            cancel = true;
+        }
+        if (TextUtils.isEmpty(user.getBirthDate().toString())) {
+            mBirthDate.setError(getString(R.string.error_field_required));
+            focusView = mBirthDate;
+            cancel = true;
+        }
+
         // Check for a valid password, if the user entered one.
-        if (!TextUtils.isEmpty(password) && !isPasswordValid(password)) {
+        if (!TextUtils.isEmpty(user.getPassword()) && !isPasswordValid(user.getPassword())) {
             mPasswordView.setError(getString(R.string.error_invalid_password));
             focusView = mPasswordView;
             cancel = true;
         }
 
         // Check for a valid email address.
-        if (TextUtils.isEmpty(email)) {
+        if (TextUtils.isEmpty(user.getEmail())) {
             mEmailView.setError(getString(R.string.error_field_required));
             focusView = mEmailView;
             cancel = true;
-        } else if (!isEmailValid(email)) {
+        } else if (!isEmailValid(user.getEmail())) {
             mEmailView.setError(getString(R.string.error_invalid_email));
             focusView = mEmailView;
             cancel = true;
@@ -267,8 +275,70 @@ public class SignupFragment extends Fragment implements LoaderManager.LoaderCall
             // Show a progress spinner, and kick off a background task to
             // perform the user login attempt.
             showProgress(true);
-            mAuthTask = new UserLoginTask(email, password);
-            mAuthTask.execute((Void) null);
+            addUser(user);
+        }
+    }
+
+    private void addUser(User user) {
+        HashMap<String, String> params = new HashMap<String, String>();
+        params.put("email", user.getEmail());
+        params.put("password",user.getPassword());
+        params.put("first_name", user.getFirstName());
+        params.put("last_name",user.getLastName());
+        params.put("gender", "m");
+        params.put("contact_no",user.getContactNo());
+        params.put("is_varified","0");
+        params.put("is_active","0");
+        JsonObjectRequest jsonReq = new JsonObjectRequest(Request.Method.POST,
+                getString(R.string.master_url) + URL, new JSONObject(params), new Response.Listener<JSONObject>() {
+
+            @Override
+            public void onResponse(JSONObject response) {
+                VolleyLog.d(TAG, "Response: " + response.toString());
+                parseJsonFeed(response);
+            }
+        }, new Response.ErrorListener() {
+
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                VolleyLog.d(TAG, "Error: " + error.getMessage());
+                showProgress(false);
+                //mTextViewMessage.setText("Request Timeout / Not Connected to Network");
+                //mTextViewMessage.setVisibility(View.VISIBLE);
+            }
+        });
+
+        jsonReq.setRetryPolicy(new DefaultRetryPolicy(
+                TIMEOUT_DURATION,
+                DefaultRetryPolicy.DEFAULT_MAX_RETRIES,
+                DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
+
+        // Adding request to volley request queue
+        AppController.getInstance().addToRequestQueue(jsonReq);
+
+    }
+
+    /**
+     * Parsing json reponse and passing the data to feed view list adapter
+     */
+    private void parseJsonFeed(JSONObject response) {
+        try {
+
+            int isSuccess = response.getInt("success");
+            String message = response.getString("Message").isEmpty()?"":response.getString("Message");
+            //JSONObject data = response.getJSONObject("data");
+
+            showProgress(false);
+            if (isSuccess == 1){
+                Intent i = new Intent(getActivity(), FeedActivity.class);
+                i.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                startActivity(i);
+            }else{
+                mTextViewMessage.setText(message);
+                mTextViewMessage.setVisibility(View.VISIBLE);
+            }
+        } catch (JSONException e) {
+            e.printStackTrace();
         }
     }
 
@@ -293,12 +363,12 @@ public class SignupFragment extends Fragment implements LoaderManager.LoaderCall
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB_MR2) {
             int shortAnimTime = getResources().getInteger(android.R.integer.config_shortAnimTime);
 
-            mLoginFormView.setVisibility(show ? View.GONE : View.VISIBLE);
-            mLoginFormView.animate().setDuration(shortAnimTime).alpha(
+            mSignupFormView.setVisibility(show ? View.GONE : View.VISIBLE);
+            mSignupFormView.animate().setDuration(shortAnimTime).alpha(
                     show ? 0 : 1).setListener(new AnimatorListenerAdapter() {
                 @Override
                 public void onAnimationEnd(Animator animation) {
-                    mLoginFormView.setVisibility(show ? View.GONE : View.VISIBLE);
+                    mSignupFormView.setVisibility(show ? View.GONE : View.VISIBLE);
                 }
             });
 
@@ -314,118 +384,7 @@ public class SignupFragment extends Fragment implements LoaderManager.LoaderCall
             // The ViewPropertyAnimator APIs are not available, so simply show
             // and hide the relevant UI components.
             mProgressView.setVisibility(show ? View.VISIBLE : View.GONE);
-            mLoginFormView.setVisibility(show ? View.GONE : View.VISIBLE);
-        }
-    }
-
-    @Override
-    public Loader<Cursor> onCreateLoader(int i, Bundle bundle) {
-        return new CursorLoader(getActivity(),
-                // Retrieve data rows for the device user's 'profile' contact.
-                Uri.withAppendedPath(ContactsContract.Profile.CONTENT_URI,
-                        ContactsContract.Contacts.Data.CONTENT_DIRECTORY), ProfileQuery.PROJECTION,
-
-                // Select only email addresses.
-                ContactsContract.Contacts.Data.MIMETYPE +
-                        " = ?", new String[]{ContactsContract.CommonDataKinds.Email
-                .CONTENT_ITEM_TYPE},
-
-                // Show primary email addresses first. Note that there won't be
-                // a primary email address if the user hasn't specified one.
-                ContactsContract.Contacts.Data.IS_PRIMARY + " DESC");
-    }
-
-    @Override
-    public void onLoadFinished(Loader<Cursor> loader, Cursor cursor) {
-        List<String> emails = new ArrayList<>();
-        cursor.moveToFirst();
-        while (!cursor.isAfterLast()) {
-            emails.add(cursor.getString(ProfileQuery.ADDRESS));
-            cursor.moveToNext();
-        }
-
-        addEmailsToAutoComplete(emails);
-    }
-
-    @Override
-    public void onLoaderReset(Loader<Cursor> loader) {
-
-    }
-
-    private void addEmailsToAutoComplete(List<String> emailAddressCollection) {
-        //Create adapter to tell the AutoCompleteTextView what to show in its dropdown list.
-        ArrayAdapter<String> adapter =
-                new ArrayAdapter<>(getActivity(),
-                        android.R.layout.simple_dropdown_item_1line, emailAddressCollection);
-
-        mEmailView.setAdapter(adapter);
-    }
-
-
-    private interface ProfileQuery {
-        String[] PROJECTION = {
-                ContactsContract.CommonDataKinds.Email.ADDRESS,
-                ContactsContract.CommonDataKinds.Email.IS_PRIMARY,
-        };
-
-        int ADDRESS = 0;
-        int IS_PRIMARY = 1;
-    }
-
-    /**
-     * Represents an asynchronous login/registration task used to authenticate
-     * the user.
-     */
-    public class UserLoginTask extends AsyncTask<Void, Void, Boolean> {
-
-        private final String mEmail;
-        private final String mPassword;
-
-        UserLoginTask(String email, String password) {
-            mEmail = email;
-            mPassword = password;
-        }
-
-        @Override
-        protected Boolean doInBackground(Void... params) {
-            // TODO: attempt authentication against a network service.
-
-            try {
-                // Simulate network access.
-                Thread.sleep(2000);
-            } catch (InterruptedException e) {
-                return false;
-            }
-
-            for (String credential : DUMMY_CREDENTIALS) {
-                String[] pieces = credential.split(":");
-                if (pieces[0].equals(mEmail)) {
-                    // Account exists, return true if the password matches.
-                    return pieces[1].equals(mPassword);
-                }
-            }
-
-            // TODO: register the new account here.
-            return true;
-        }
-
-        @Override
-        protected void onPostExecute(final Boolean success) {
-            mAuthTask = null;
-            showProgress(false);
-
-            if (success) {
-                getActivity().finish();
-            } else {
-                mPasswordView.setError(getString(R.string.error_incorrect_password));
-                mPasswordView.requestFocus();
-            }
-        }
-
-        @Override
-        protected void onCancelled() {
-            mAuthTask = null;
-            showProgress(false);
+            mSignupFormView.setVisibility(show ? View.GONE : View.VISIBLE);
         }
     }
 
